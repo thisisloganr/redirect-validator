@@ -9,9 +9,8 @@ startTime = datetime.now()
 
 print("Enter Filepath:")
 
-# Test file: "C:\Users\lray\Desktop\Py Test\Redirect Checker\301Tester 2.xlsx"
 fp = input()
-#Cleans up a standard filepath - reverses slashes and removes double quotes
+# Cleans up a standard filepath - reverses slashes and removes double quotes
 fp = fp.replace("\\","/").replace("\"","")
 
 # Create dataFrame based on file type
@@ -110,7 +109,5 @@ if exp == "y":
         pass
     else:
         pass
-elif exp == "n":
-    pass
 else:
     pass
