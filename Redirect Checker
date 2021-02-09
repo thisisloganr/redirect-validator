@@ -1,0 +1,116 @@
+import pandas as pd
+import requests
+import os
+from datetime import datetime
+import numpy as np
+
+# Set start time
+startTime = datetime.now()
+
+print("Enter Filepath:")
+
+# Test file: "C:\Users\lray\Desktop\Py Test\Redirect Checker\301Tester 2.xlsx"
+fp = input()
+#Cleans up a standard filepath - reverses slashes and removes double quotes
+fp = fp.replace("\\","/").replace("\"","")
+
+# Create dataFrame based on file type
+if "csv" in fp:
+    df = pd.read_csv(fp)
+    fty = "csv"
+elif "xlsx" in fp:
+    df = pd.read_excel(fp)
+    fty = "xlsx"
+else:
+    print("Invalid File Type")
+
+# Hostname in original file?
+print("\n" + "Do you need to append the hostname? y/n")
+host = input()
+
+# Append hostname if answered yes above
+if host == "y":
+    print("\n" + "Hostname:")
+    site = input()
+
+    # Replaces Prod hostname with Test hostname
+    df[list(df.columns)[0]]  = site.replace(".com/",".com") + df[list(df.columns)[0]]
+    df[list(df.columns)[1]] = site.replace(".com/",".com") + df[list(df.columns)[1]]
+else:
+    pass
+
+
+# Skip Test/Prod Question if Hostname was entered
+if host == "y":
+    env = "Prod"
+    pass
+else:
+    print("\n" + "Test or Prod?")
+    env = input()
+    # User input for production and test hostnames
+    if env == "Test":
+        print("\n" + "Prod Hostname:")
+        prod = input()
+        print("\n" + "Test Hostname:")
+        test = input()
+
+        # Replaces Prod hostname with Test hostname
+        df = df.replace({prod:test}, regex=True)
+    else:
+        pass
+
+# Show Origin Response Code
+def url_access(x):
+    return requests.head(x).status_code
+df['Origin Status Code'] = df[list(df.columns)[0]].apply(url_access)
+
+# Get Dest
+def url_dest(x):
+    return requests.head(x,allow_redirects=True).url
+
+# Add Destination Column
+df['Actual Destination'] = df[list(df.columns)[0]].apply(url_dest)
+
+# Show Destination Response Code
+def url_access(x):
+    return requests.head(x).status_code
+df['Destination Status Code'] = df[list(df.columns)[3]].apply(url_access)
+
+# Add match column
+df['Proposed and Actual Match'] = (df[list(df.columns)[1]] == df['Actual Destination']).astype(str)
+
+# Add match column
+df['Status Check'] = (df['Destination Status Code'] == 200).astype(str)
+df['IssuesT'] = df['Status Check'] + df['Proposed and Actual Match']
+df['Redirect has a problem'] = df['IssuesT'].str.contains("False")
+df = df.drop(columns=['Status Check', 'IssuesT'])
+
+# Sort by Issues Value (moves mismatches up to the top)
+df = df.sort_values(by=['Redirect has a problem'], ascending = False)
+
+# Output Dataframe
+print(df)
+
+# How long did the script take to run?
+print("\n" + "Time to Run: " + str(datetime.now() - startTime) + "\n")
+
+# Count how many correct and inccorect redirects
+dfC = df['Redirect has a problem'].value_counts()
+print(dfC)
+
+# Writes new .csv file
+print("\n" + "Export? (y/n)")
+exp = input()
+if exp == "y":
+    if fty == "xlsx":
+        df.to_csv(os.path.dirname(fp)+"/" + os.path.basename(fp).replace(".xlsx","") + " - " + env + " Validation.csv")
+        pass
+    elif fty == "csv":
+        df.to_csv(os.path.dirname(fp)+"/" + os.path.basename(fp).replace(".csv","") + " - " + env + " Validation.csv")
+        pass
+    else:
+        pass
+elif exp == "n":
+    pass
+else:
+    pass
