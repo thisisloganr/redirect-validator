@@ -1,3 +1,5 @@
+import pandas as pd
+import requests
 import os
 from datetime import datetime
 import numpy as np
@@ -111,7 +113,9 @@ if exp == "y":
         df.to_csv(os.path.dirname(fp)+"/" + os.path.basename(fp).replace(".csv","") + " - " + env + " Validation.csv")
         pass
     elif fty == "sheet":
-        path = os.path.join(os.path.expanduser("~"), "Desktop", env + " Validation.csv")
+        print("Enter File Name:")
+        fn = input()
+        path = os.path.join(os.path.expanduser("~"), "Desktop", fn + " Validation.csv")
         df.to_csv(path)
         pass
     else:
