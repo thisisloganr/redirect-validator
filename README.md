@@ -10,7 +10,7 @@ Export options include:
 
   • If you use Google Sheets as the input, your export will hit your desktop
   
-  • If you install this on your machine and use a filepath as your input, your export will hit the folder in which the source file lives
+  • If you use a filepath as your input, your export will hit the folder in which the input file lives
 
 The output is your list, with any problematic redirects sorted up to the top. 
 
