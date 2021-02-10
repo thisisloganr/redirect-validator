@@ -113,7 +113,7 @@ if exp == "y":
         df.to_csv(os.path.dirname(fp)+"/" + os.path.basename(fp).replace(".csv","") + " - " + env + " Validation.csv")
         pass
     elif fty == "sheet":
-        print("Enter File Name:")
+        print("\n" + "Enter File Name:")
         fn = input()
         path = os.path.join(os.path.expanduser("~"), "Desktop", fn + " Validation.csv")
         df.to_csv(path)
