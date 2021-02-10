@@ -1,4 +1,5 @@
-# redirect-validator
+Redirector Validator: 
+
 Input a file with 2 columns in which the first column is the origin of a redirect and the second column is the proposed destination. 
 
 From there you'll be prompted with a series of questions to help provision for your list with or without hostnames (you can enter it if your list is page paths only)
@@ -14,3 +15,6 @@ Export options include:
 The output is your list, with any problematic redirects sorted up to the top. 
 
   • "Problematic" being defined as any redirect that has a destination URL with a non-200 status code OR the actual and proposed destinations do not match
+
+
+The last line of the code is a comment line with a public Google Sheets file for testing
